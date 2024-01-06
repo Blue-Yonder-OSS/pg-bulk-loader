@@ -32,9 +32,11 @@ class BatchInsert:
         self.data_df = None
         self.pool = self.pg_conn_details.create_connection_pool(min_size=self.min_conn, max_size=self.max_conn)
 
+    @retry(Exception, tries=3, delay=2, backoff=1)
     async def open_connection_pool(self):
         await self.pool.open(wait=True)
 
+    @retry(Exception, tries=3, delay=2, backoff=1)
     async def close_connection_pool(self):
         await self.pool.close()
 

@@ -1,0 +1,29 @@
+name: UnitTestExecution
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v5.0.0
+        with:
+          python-version: 3.9
+
+      - uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install -r test-requirements.txt
+
+      - name: Run unit test cases
+        run: coverage run --source=src --module pytest --verbose  && coverage report --show-missing

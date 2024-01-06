@@ -1,0 +1,17 @@
+[project]
+name = "pandas-to-postgres"
+version = "1.0.0"
+authors = [
+  { name="Aditya Jaroli", email="adityajaroli@gmail.com" },
+]
+description = "A utility package to do bulk insertion faster from pandas dataframe to postgres table."
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3.9+",
+    "License :: OSI Approved :: MIT License"
+]
+
+[project.urls]
+Homepage = "https://github.com/adityajaroli/pandas-to-postgres.git"
+Issues = "hhttps://github.com/adityajaroli/pandas-to-postgres/issues"

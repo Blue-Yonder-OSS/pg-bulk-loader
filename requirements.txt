@@ -1,0 +1,7 @@
+pandas
+SQLAlchemy
+psycopg[binary]
+fastparquet
+asyncio
+psycopg_pool
+retry

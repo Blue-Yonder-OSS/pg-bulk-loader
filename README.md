@@ -1,9 +1,11 @@
 # pandas-to-postgres
 
 <h2>Overview</h2>
+
 **pandas-to-postgres** is a utility package designed to facilitate faster bulk insertion from pandas DataFrame to a PostgreSQL table.
 
 <h2>Purpose</h2>
+
 This utility leverages the power of PostgreSQL in combination with Python to efficiently handle the bulk insertion of large datasets. The key features that contribute to its speed include:
 
 1. Utilization of Postgres' copy command
@@ -13,12 +15,15 @@ This utility leverages the power of PostgreSQL in combination with Python to eff
 5. Capability to drop indexes during insertion and recreate them in parallel
 
 <h2>Usage</h2>
+
 The utility provides the following useful functions and classes:
+
 1. **batch_insert_to_postgres**
 2. **batch_insert_to_postgres_with_multi_process**
 3. **BatchInsert**
 
-<h3>_**batch_insert_to_postgres()**_ function</h3>
+
+<h3>batch_insert_to_postgres() function</h3>
 
 - `pg_conn_details`: Instance of the PgConnectionDetail class containing PostgreSQL server connection details.
 - `table_name`: Name of the table for bulk insertion.
@@ -28,7 +33,7 @@ The utility provides the following useful functions and classes:
 - `drop_and_create_index`: Set to True if indexes need to be dropped during insert and re-created once insertion is complete.
 - `use_multi_process_for_create_index`: Set to True if indexes need to be re-created in parallel; otherwise, they will be created sequentially.
 
-<h3>_**batch_insert_to_postgres_with_multi_process()**_ function</h3> 
+<h3>batch_insert_to_postgres_with_multi_process() function</h3> 
 
 - `pg_conn_details`: Instance of the PgConnectionDetail class containing PostgreSQL server connection details.
 - `table_name`: Name of the table for bulk insertion.
@@ -87,6 +92,7 @@ await batch_insert_to_postgres(
 import pandas as pd
 from src.batch.batch_insert import BatchInsert
 from src.batch.pg_connection_detail import PgConnectionDetail
+from src.batch.fast_load_hack import FastLoadHack
 
 # Create Postgres Connection Details object. This will help in creating and managing the database connections 
 pg_conn_details = PgConnectionDetail(
@@ -104,6 +110,12 @@ batch_ = BatchInsert(
     min_conn=20, 
     max_conn=25
 )
+
+# If index needs to be dropped before insertion
+fast_load_hack = FastLoadHack(pg_conn_details=pg_conn_details, table_name=table_name)
+indexes: dict = fast_load_hack.get_indexes()
+fast_load_hack.drop_indexes(list(indexes.keys()))
+
 try:
     # Open and create the connections in the connection pool
     await batch_.open_connection_pool()
@@ -115,6 +127,8 @@ try:
 finally:
     # Close the connection pool
     await batch_.close_connection_pool()
+    # Re-create indexes once insertion is done
+    fast_load_hack.create_indexes(list(indexes.values()), use_multi_process_for_create_index=True/False) # Use this based on either sequential or parallel building of index
 ```
 
 3. Parallel insertion using multiprocessing:

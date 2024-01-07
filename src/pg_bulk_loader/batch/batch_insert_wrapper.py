@@ -42,21 +42,40 @@ async def run(data_df, batch_size, pg_conn_details, table_name, min_conn, max_co
         await batch_.close_connection_pool()
 
 
+async def run_with_generator(data_generator, batch_size, pg_conn_details, table_name, min_conn, max_conn):
+
+    batch_ = BatchInsert(
+        batch_size=batch_size,
+        pg_conn_details=pg_conn_details,
+        table_name=table_name,
+        min_conn=min_conn,
+        max_conn=max_conn
+    )
+    try:
+        await batch_.open_connection_pool()
+        for data_df in data_generator:
+            await batch_.execute(data_df)
+    finally:
+        await batch_.close_connection_pool()
+
+
 @time_it
 async def batch_insert_to_postgres(
         pg_conn_details: PgConnectionDetail,
         table_name: str,
-        data_df: pd.DataFrame,
         batch_size: int,
         min_conn_pool_size: int = 5,
         max_conn_pool_size: int = 10,
         use_multi_process_for_create_index: bool = True,
-        drop_and_create_index: bool = True
+        drop_and_create_index: bool = True,
+        data_df: pd.DataFrame = None,
+        data_generator = None
 ):
     """
     :param pg_conn_details: Instance of PgConnectionDetail class which contains postgres connection details
     :param table_name: Name of the table
     :param data_df: Data to be inserted
+    :param data_generator: Generator which generates pandas DataFrame
     :param batch_size: Number of records to insert at a time
     :param min_conn_pool_size: Min PG connections created and saved in connection pool
     :param max_conn_pool_size: Max PG connections created and saved in connection pool
@@ -65,8 +84,8 @@ async def batch_insert_to_postgres(
     Note: Only non-pk indexes are dropped and re-created.
     :return:
     """
-    if not isinstance(data_df, pd.DataFrame) or data_df.empty:
-        return
+    if data_df is None and data_generator is None:
+        raise Exception("Data input cannot be empty!")
 
     fast_load_hack = FastLoadHack(pg_conn_details=pg_conn_details, table_name=table_name)
     indexes = {}
@@ -76,7 +95,12 @@ async def batch_insert_to_postgres(
         fast_load_hack.drop_indexes(list(indexes.keys()))
 
     try:
-        await run(data_df, batch_size, pg_conn_details, table_name, min_conn_pool_size, max_conn_pool_size)
+        if isinstance(data_df, pd.DataFrame) and not data_df.empty:
+            await run(data_df, batch_size, pg_conn_details, table_name, min_conn_pool_size, max_conn_pool_size)
+        else:
+            await run_with_generator(
+                data_generator, batch_size, pg_conn_details, table_name, min_conn_pool_size, max_conn_pool_size
+            )
     except Exception as e:
         raise e
     finally:

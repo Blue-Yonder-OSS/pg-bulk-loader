@@ -14,35 +14,20 @@ class TestBatchInsertWrapper(unittest.IsolatedAsyncioTestCase):
 
     postgres_ = None
 
-    async def test_batch_insert_when_data_is_null(self):
-        input_df = None
-
-        await batch_insert_to_postgres(
-            pg_conn_details=self.pg_connection,
-            table_name="aop_dummy",
-            data_df=input_df,
-            batch_size=200,
-            min_conn_pool_size=5,
-            max_conn_pool_size=7,
-            use_multi_process_for_create_index=False,
-            drop_and_create_index=False
-        )
-        # Validate from DB
-        fetch_rows_count_and_assert(self.pg_connection, "aop_dummy", expected=0)
-
-    async def test_batch_insert_when_data_is_empty_dataframe(self):
-        input_df = pd.DataFrame()
-
-        await batch_insert_to_postgres(
-            pg_conn_details=self.pg_connection,
-            table_name="aop_dummy",
-            data_df=input_df,
-            batch_size=200,
-            min_conn_pool_size=5,
-            max_conn_pool_size=7,
-            use_multi_process_for_create_index=False,
-            drop_and_create_index=False
-        )
+    async def test_batch_insert_when_input_is_null(self):
+        with pytest.raises(Exception) as e:
+            await batch_insert_to_postgres(
+                pg_conn_details=self.pg_connection,
+                table_name="aop_dummy",
+                data_df=None,
+                data_generator=None,
+                batch_size=200,
+                min_conn_pool_size=5,
+                max_conn_pool_size=7,
+                use_multi_process_for_create_index=False,
+                drop_and_create_index=False
+            )
+        assert str(e.value) == "Data input cannot be empty!"
         # Validate from DB
         fetch_rows_count_and_assert(self.pg_connection, "aop_dummy", expected=0)
 
@@ -201,6 +186,26 @@ class TestBatchInsertWrapper(unittest.IsolatedAsyncioTestCase):
             pg_conn_details=self.pg_connection,
             table_name="aop_dummy",
             data_df=input_df,
+            batch_size=200,
+            min_conn_pool_size=2,
+            max_conn_pool_size=3,
+            use_multi_process_for_create_index=True,
+            drop_and_create_index=True
+        )
+
+        # Validate from DB
+        fetch_rows_count_and_assert(self.pg_connection, "aop_dummy", expected=1000)
+
+        # Truncate table and assert
+        truncate_table_and_assert(self.pg_connection, "aop_dummy")
+
+    async def test_batch_insert_when_input_is_given_as_data_generator(self):
+        input_df_generator = pd.read_csv("tests/unit/aopd-1k.csv", chunksize=500)
+
+        await batch_insert_to_postgres(
+            pg_conn_details=self.pg_connection,
+            table_name="aop_dummy",
+            data_generator=input_df_generator,
             batch_size=200,
             min_conn_pool_size=2,
             max_conn_pool_size=3,

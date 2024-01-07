@@ -1,9 +1,9 @@
 import io
 import pandas as pd
 import asyncio
-from src.batch.pg_connection_detail import PgConnectionDetail
-from src.utils.dataframe_utils import get_ranges
-from src.utils.time_it_decorator import time_it
+from .pg_connection_detail import PgConnectionDetail
+from ..utils.dataframe_utils import get_ranges
+from ..utils.time_it_decorator import time_it
 from retry import retry
 
 

@@ -5,8 +5,8 @@ import pytest
 import testing.postgresql
 import pandas as pd
 
-from src.batch.batch_insert_wrapper import batch_insert_to_postgres
-from src.batch.pg_connection_detail import PgConnectionDetail
+from src.pg_bulk_loader.batch.batch_insert_wrapper import batch_insert_to_postgres
+from src.pg_bulk_loader.batch.pg_connection_detail import PgConnectionDetail
 from .pg_helper import init_db, fetch_rows_count_and_assert, truncate_table_and_assert, create_indexes, drop_indexes
 
 
@@ -60,7 +60,7 @@ class TestBatchInsertWrapper(unittest.IsolatedAsyncioTestCase):
     def tearDownClass(cls) -> None:
         cls.postgres_.stop()
 
-    @patch("src.batch.batch_insert_wrapper.run")
+    @patch("src.pg_bulk_loader.batch.batch_insert_wrapper.run")
     async def test_batch_insert_when_exception_is_thrown(self, mock_run):
         mock_run.side_effect = Exception("Custom Exception!")
 

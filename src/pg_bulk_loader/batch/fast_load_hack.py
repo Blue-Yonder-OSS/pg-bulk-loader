@@ -1,6 +1,6 @@
-from src.batch.pg_connection_detail import PgConnectionDetail
+from .pg_connection_detail import PgConnectionDetail
 from concurrent.futures import ProcessPoolExecutor
-from src.utils.time_it_decorator import time_it
+from ..utils.time_it_decorator import time_it
 
 
 class FastLoadHack:

@@ -1,6 +1,6 @@
 import psycopg
 import pandas as pd
-from src.batch.pg_connection_detail import PgConnectionDetail
+from src.pg_bulk_loader.batch.pg_connection_detail import PgConnectionDetail
 
 
 def init_db(postgresql):

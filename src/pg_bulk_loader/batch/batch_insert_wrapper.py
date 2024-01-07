@@ -1,8 +1,8 @@
-from src.batch.pg_connection_detail import PgConnectionDetail
-from src.batch.fast_load_hack import FastLoadHack
-from src.batch.batch_insert import BatchInsert
+from .pg_connection_detail import PgConnectionDetail
+from .fast_load_hack import FastLoadHack
+from .batch_insert import BatchInsert
 import pandas as pd
-from src.utils.time_it_decorator import time_it
+from ..utils.time_it_decorator import time_it
 import asyncio
 from concurrent.futures import ProcessPoolExecutor
 import math

@@ -3,8 +3,8 @@ import pytest
 import psycopg
 import testing.postgresql
 import pandas as pd
-from src.batch.batch_insert import BatchInsert
-from src.batch.pg_connection_detail import PgConnectionDetail
+from src.pg_bulk_loader.batch.batch_insert import BatchInsert
+from src.pg_bulk_loader.batch.pg_connection_detail import PgConnectionDetail
 
 
 def init_db(postgresql):

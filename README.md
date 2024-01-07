@@ -54,121 +54,144 @@ Properties to create an instance of BatchInsert class:
 
 <h3>Developer Notes:</h3>
 
-- The `min_conn` or `min_conn_pool_size` can be either equal to or less than `ceil(total_data_size / batch_size)`.
-- The `max_conn` or 'max_conn_pool_size' can be either equal to or greater than `ceil(total_data_size / batch_size)`.
-- The `no_of_processes` can be set to number of cores available or leave it None for system to get the optimal number based on resource availability.
-- The ideal `batch_size` which is observed during testing is in between 100,000 to 250,000. Again, this depends on the data and table structure. 
+- The `min_conn` or `min_conn_pool_size` can be either equal to or less than the result of `ceil(total_data_size / batch_size)`.
+- The `max_conn` or `max_conn_pool_size` can be either equal to or greater than the result of `ceil(total_data_size / batch_size)`.
+- The `no_of_processes` can be set to the number of available cores or left as None for the system to determine the optimal number based on resource availability.
+- The ideal `batch_size`, as observed during testing, typically falls within the range of 100,000 to 250,000. However, this recommendation is contingent upon the characteristics of the data and table structure.
+The multiprocessing function execution must start in the __main__ block.
 
+<h2>Package installation:</h2>
+    `pip install pg-bulk-loader`
 
 <h2>Examples:</h2>
 
-1. Sequential insertion with a specified batch size:
+1. Loading entire dataset once and sending for bulk insert in batches:
 
 ```python
 import pandas as pd
-from src.batch.batch_insert_wrapper import batch_insert_to_postgres
-from src.batch.pg_connection_detail import PgConnectionDetail
+import asyncio
+from pg_bulk_loader import PgConnectionDetail, batch_insert_to_postgres
 
-# Read data. Let's suppose below DataFrame has 20M records
-input_data_df = pd.DataFrame()
 
-# Create Postgres Connection Details object. This will help in creating and managing the database connections 
-pg_conn_details = PgConnectionDetail(
-    user="<postgres username>",
-    password="<postgres password>",
-    database="<postgres database>",
-    host="<host address to postgres server>",
-    port="<port>",
-    schema="<schema name where table exist>"
-)
+async def run():
+    # Read data. Let's suppose below DataFrame has 20M records
+    input_data_df = pd.DataFrame()
+    
+    # Create Postgres Connection Details object. This will help in creating and managing the database connections 
+    pg_conn_details = PgConnectionDetail(
+        user="<postgres username>",
+        password="<postgres password>",
+        database="<postgres database>",
+        host="<host address to postgres server>",
+        port="<port>",
+        schema="<schema name where table exist>"
+    )
+    
+    # Data will be inserted and committed in the batch of 2,50,000
+    await batch_insert_to_postgres(
+        pg_conn_details=pg_conn_details,
+        table_name="<table_name>",
+        data_df=input_data_df,
+        batch_size=250000,
+        min_conn_pool_size=20,
+        max_conn_pool_size=25,
+        use_multi_process_for_create_index=True,
+        drop_and_create_index=True
+    )
 
-# Data will be inserted and committed in the batch of 2,50,000
-await batch_insert_to_postgres(
-    pg_conn_details=pg_conn_details,
-    table_name="<table_name>",
-    data_df=input_data_df,
-    batch_size=250000,
-    min_conn_pool_size=20,
-    max_conn_pool_size=25,
-    use_multi_process_for_create_index=True,
-    drop_and_create_index=True
-)
+
+if __name__ == '__main__':
+    asyncio.run(run())
 ```
 
-2. Sequential insertion without loading the entire dataset into memory:
+2. Loading dataset in chunks and sending for bulk insert in batches:
+
 ```python
 import pandas as pd
-from src.batch.batch_insert import BatchInsert
-from src.batch.pg_connection_detail import PgConnectionDetail
-from src.batch.fast_load_hack import FastLoadHack
+import asyncio
+from pg_bulk_loader import PgConnectionDetail, FastLoadHack, BatchInsert
 
-# Create Postgres Connection Details object. This will help in creating and managing the database connections 
-pg_conn_details = PgConnectionDetail(
-    user="<postgres username>",
-    password="<postgres password>",
-    database="<postgres database>",
-    host="<host address to postgres server>",
-    port="<port>",
-    schema="<schema name where table exist>"
-)
-batch_ = BatchInsert(
-    batch_size=250000, 
-    table_name="<table_name>", 
-    pg_conn_details=pg_conn_details, 
-    min_conn=20, 
-    max_conn=25
-)
 
-# If index needs to be dropped before insertion
-fast_load_hack = FastLoadHack(pg_conn_details=pg_conn_details, table_name=table_name)
-indexes: dict = fast_load_hack.get_indexes()
-fast_load_hack.drop_indexes(list(indexes.keys()))
-
-try:
-    # Open and create the connections in the connection pool
-    await batch_.open_connection_pool()
+async def run():
+    # Create Postgres Connection Details object. This will help in creating and managing the database connections 
+    pg_conn_details = PgConnectionDetail(
+        user="<postgres username>",
+        password="<postgres password>",
+        database="<postgres database>",
+        host="<host address to postgres server>",
+        port="<port>",
+        schema="<schema name where table exist>"
+    )
+    batch_ = BatchInsert(
+        batch_size=250000,
+        table_name="<table_name>",
+        pg_conn_details=pg_conn_details,
+        min_conn=20,
+        max_conn=25
+    )
     
-    # Lets load only a chunk of 1M from the csv file of 20M
-    for input_df in pd.read_csv("file-name.csv", chunksize=1000000):
-        # This will partition the 1M data into 4 partitions of size 250000 each as the batch_size is 250000.
-        await batch_.execute(input_df)
-finally:
-    # Close the connection pool
-    await batch_.close_connection_pool()
-    # Re-create indexes once insertion is done
-    fast_load_hack.create_indexes(list(indexes.values()), use_multi_process_for_create_index=True/False) # Use this based on either sequential or parallel building of index
+    # If index needs to be dropped before insertion
+    fast_load_hack = FastLoadHack(pg_conn_details=pg_conn_details, table_name=table_name)
+    indexes: dict = fast_load_hack.get_indexes()
+    fast_load_hack.drop_indexes(list(indexes.keys()))
+    
+    try:
+        # Open and create the connections in the connection pool
+        await batch_.open_connection_pool()
+    
+        # Lets load only a chunk of 1M from the csv file of 20M
+        for input_df in pd.read_csv("file-name.csv", chunksize=1000000):
+            # This will partition the 1M data into 4 partitions of size 250000 each as the batch_size is 250000.
+            await batch_.execute(input_df)
+    finally:
+        # Close the connection pool
+        await batch_.close_connection_pool()
+        # Re-create indexes once insertion is done
+        fast_load_hack.create_indexes(list(indexes.values()), use_multi_process=True)  # Set to True if indexes need to be created parallely
+
+        
+if __name__ == '__main__':
+    asyncio.run(run())
+
 ```
 
 3. Parallel insertion using multiprocessing:
 
 The below code uses 5 cores and processes 5M records parallely i.e. 1M on one core with 250000 records insertion at a time.
- 
+
 ```python
 import pandas as pd
-from src.batch.batch_insert_wrapper import batch_insert_to_postgres_with_multi_process
-from src.batch.pg_connection_detail import PgConnectionDetail
+import asyncio
+from pg_bulk_loader import PgConnectionDetail, batch_insert_to_postgres_with_multi_process
 
-# Create Postgres Connection Details object. This will help in creating and managing the database connections 
-pg_conn_details = PgConnectionDetail(
-    user="<postgres username>",
-    password="<postgres password>",
-    database="<postgres database>",
-    host="<host address to postgres server>",
-    port="<port>",
-    schema="<schema name where table exist>"
-)
 
-df_generator = pd.read_csv("20M-file.csv", chunksize=1000000)
+async def run():
+    # Create Postgres Connection Details object. This will help in creating and managing the database connections 
+    pg_conn_details = PgConnectionDetail(
+        user="<postgres username>",
+        password="<postgres password>",
+        database="<postgres database>",
+        host="<host address to postgres server>",
+        port="<port>",
+        schema="<schema name where table exist>"
+    )
+    
+    df_generator = pd.read_csv("20M-file.csv", chunksize=1000000)
+    
+    # Data will be inserted and committed in the batch of 2,50,000
+    await batch_insert_to_postgres_with_multi_process(
+        pg_conn_details=pg_conn_details,
+        table_name="<table_name>",
+        data_generator=df_generator,
+        batch_size=250000,
+        min_conn_pool_size=20,
+        max_conn_pool_size=25,
+        no_of_processes=5,
+        drop_and_create_index=True
+    )
 
-# Data will be inserted and committed in the batch of 2,50,000
-await batch_insert_to_postgres_with_multi_process(
-    pg_conn_details=pg_conn_details,
-    table_name="<table_name>",
-    data_generator=df_generator,
-    batch_size=250000,
-    min_conn_pool_size=20,
-    max_conn_pool_size=25,
-    no_of_processes=5,
-    drop_and_create_index=True
-)
+
+# The multiprocessing execution must start in the __main__.
+if __name__ == '__main__':
+    asyncio.run(run())
 ```

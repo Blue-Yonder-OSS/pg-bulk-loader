@@ -30,4 +30,4 @@ jobs:
           pip install -r test-requirements.txt
 
       - name: Run unit test cases
-        run: coverage run --source=src --module pytest --verbose  && coverage report --show-missing
+        run: coverage run --source=pg_bulk_loader --module pytest --verbose  && coverage report --show-missing

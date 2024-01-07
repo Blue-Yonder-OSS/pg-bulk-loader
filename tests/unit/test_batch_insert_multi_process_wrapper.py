@@ -2,8 +2,8 @@ import unittest
 import pytest
 import testing.postgresql
 import pandas as pd
-from src.batch.batch_insert_wrapper import batch_insert_to_postgres_with_multi_process
-from src.batch.pg_connection_detail import PgConnectionDetail
+from src.pg_bulk_loader.batch.batch_insert_wrapper import batch_insert_to_postgres_with_multi_process
+from src.pg_bulk_loader.batch.pg_connection_detail import PgConnectionDetail
 from .pg_helper import init_db, fetch_rows_count_and_assert, truncate_table_and_assert, create_indexes, drop_indexes
 
 

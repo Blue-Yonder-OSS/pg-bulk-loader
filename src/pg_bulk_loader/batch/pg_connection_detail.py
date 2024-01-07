@@ -1,6 +1,6 @@
 import psycopg
 from psycopg_pool import AsyncConnectionPool
-from src.utils.constants import SSL_MODE
+from ..utils.constants import SSL_MODE
 
 
 class PgConnectionDetail:

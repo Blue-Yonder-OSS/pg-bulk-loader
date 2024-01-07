@@ -41,7 +41,7 @@ The utility provides the following useful functions and classes:
 - `batch_size`: Number of records to insert and commit at a time.
 - `min_conn_pool_size`, `max_conn_pool_size`: Determine the number of PostgreSQL connections in the connection pool.
 - `drop_and_create_index`: Set to True if indexes need to be dropped during insert and re-created once insertion is complete.
-- `no_of_processes`: Specify the number of cores for multiprocessing; set to None for auto-assignment.
+- `no_of_processes`: Specify the number of cores for multiprocessing.
 
 <h3>BatchInsert class</h3>
 This class serves as the core logic for the utility and is wrapped by the first two utility functions. Users may find it useful if additional logic needs to be developed around the functionality or if a custom sequential or parallel computation logic is required.
@@ -51,6 +51,14 @@ Properties to create an instance of BatchInsert class:
 - `table_name`: Name of the table for bulk insertion.
 - `pg_conn_details`: Instance of the PgConnectionDetail class containing PostgreSQL server connection details.
 - `min_conn`, `max_conn`: Determine the number of PostgreSQL connections in the connection pool.
+
+<h3>Developer Notes:</h3>
+
+- The `min_conn` or `min_conn_pool_size` can be either equal to or less than `ceil(total_data_size / batch_size)`.
+- The `max_conn` or 'max_conn_pool_size' can be either equal to or greater than `ceil(total_data_size / batch_size)`.
+- The `no_of_processes` can be set to number of cores available or leave it None for system to get the optimal number based on resource availability.
+- The ideal `batch_size` which is observed during testing is in between 100,000 to 250,000. Again, this depends on the data and table structure. 
+
 
 <h2>Examples:</h2>
 

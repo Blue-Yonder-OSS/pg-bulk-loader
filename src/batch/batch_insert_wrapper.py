@@ -5,6 +5,16 @@ import pandas as pd
 from src.utils.time_it_decorator import time_it
 import asyncio
 from concurrent.futures import ProcessPoolExecutor
+import math
+
+
+def __optimize_connection_pool_size(min_conn, total_data_size, batch_size):
+    """
+    In case the min connection is given way higher than required, the below logic optimizes the number.
+    The total number of insert tasks running in coroutines at a time are = (total_data_size / batch_size).
+    So we need (total_data_size / batch_size) number of minimum connection in the connection pool open and ready.
+    """
+    return min(min_conn, math.ceil(total_data_size/batch_size))
 
 
 def run_batch_task(data_df, batch_size, pg_conn_details, table_name, min_conn, max_conn):  # pragma: no cover
@@ -16,6 +26,8 @@ def run_batch_task(data_df, batch_size, pg_conn_details, table_name, min_conn, m
 
 
 async def run(data_df, batch_size, pg_conn_details, table_name, min_conn, max_conn):
+    min_conn = __optimize_connection_pool_size(min_conn, data_df.shape[0], batch_size)
+
     batch_ = BatchInsert(
         batch_size=batch_size,
         pg_conn_details=pg_conn_details,
@@ -53,6 +65,9 @@ async def batch_insert_to_postgres(
     Note: Only non-pk indexes are dropped and re-created.
     :return:
     """
+    if not isinstance(data_df, pd.DataFrame) or data_df.empty:
+        return
+
     fast_load_hack = FastLoadHack(pg_conn_details=pg_conn_details, table_name=table_name)
     indexes = {}
     if drop_and_create_index:

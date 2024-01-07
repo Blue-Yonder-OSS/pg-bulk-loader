@@ -5,7 +5,6 @@ import pytest
 import testing.postgresql
 import pandas as pd
 
-import src.batch.batch_insert_wrapper
 from src.batch.batch_insert_wrapper import batch_insert_to_postgres
 from src.batch.pg_connection_detail import PgConnectionDetail
 from .pg_helper import init_db, fetch_rows_count_and_assert, truncate_table_and_assert, create_indexes, drop_indexes
@@ -14,6 +13,38 @@ from .pg_helper import init_db, fetch_rows_count_and_assert, truncate_table_and_
 class TestBatchInsertWrapper(unittest.IsolatedAsyncioTestCase):
 
     postgres_ = None
+
+    async def test_batch_insert_when_data_is_null(self):
+        input_df = None
+
+        await batch_insert_to_postgres(
+            pg_conn_details=self.pg_connection,
+            table_name="aop_dummy",
+            data_df=input_df,
+            batch_size=200,
+            min_conn_pool_size=5,
+            max_conn_pool_size=7,
+            use_multi_process_for_create_index=False,
+            drop_and_create_index=False
+        )
+        # Validate from DB
+        fetch_rows_count_and_assert(self.pg_connection, "aop_dummy", expected=0)
+
+    async def test_batch_insert_when_data_is_empty_dataframe(self):
+        input_df = pd.DataFrame()
+
+        await batch_insert_to_postgres(
+            pg_conn_details=self.pg_connection,
+            table_name="aop_dummy",
+            data_df=input_df,
+            batch_size=200,
+            min_conn_pool_size=5,
+            max_conn_pool_size=7,
+            use_multi_process_for_create_index=False,
+            drop_and_create_index=False
+        )
+        # Validate from DB
+        fetch_rows_count_and_assert(self.pg_connection, "aop_dummy", expected=0)
 
     @classmethod
     def setUpClass(cls):

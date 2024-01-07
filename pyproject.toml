@@ -1,0 +1,27 @@
+[project]
+name = "pg_bulk_loader"
+version = "1.0.0"
+authors = [
+  { name="Aditya Jaroli", email="adityajaroli@gmail.com" },
+]
+description = "A utility package to do bulk insertion faster from pandas dataframe to postgres table."
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "License :: OSI Approved :: Apache Software License"
+]
+
+dependencies = [
+    "pandas",
+    "psycopg[binary]",
+    "asyncio",
+    "psycopg_pool",
+    "retry"
+]
+
+[project.urls]
+Homepage = "https://github.com/adityajaroli/pandas-to-postgres.git"
+Issues = "https://github.com/adityajaroli/pandas-to-postgres/issues"

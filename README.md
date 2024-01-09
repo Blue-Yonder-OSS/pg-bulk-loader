@@ -1,8 +1,9 @@
-# pandas-to-postgres
+# pg-bulk-loader
 
 <h2>Overview</h2>
 
-**pandas-to-postgres** is a utility package designed to facilitate faster bulk insertion from pandas DataFrame to a PostgreSQL table.
+**pg-bulk-loader** is a utility package designed to facilitate faster bulk insertion DataFrame to a PostgreSQL Database.
+Currently, it supports load from pandas DataFrame only. 
 
 <h2>Purpose</h2>
 

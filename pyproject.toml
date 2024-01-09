@@ -23,5 +23,5 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/adityajaroli/pandas-to-postgres.git"
-Issues = "https://github.com/adityajaroli/pandas-to-postgres/issues"
+Homepage = "https://github.com/adityajaroli/pg-bulk-loader.git"
+Issues = "https://github.com/adityajaroli/pg-bulk-loader/issues"

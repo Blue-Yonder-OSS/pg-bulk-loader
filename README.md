@@ -15,6 +15,28 @@ This utility leverages the power of PostgreSQL in combination with Python to eff
 4. Harnessing the power of multiprocessing
 5. Capability to drop indexes during insertion and recreate them in parallel
 
+<h2>package's Efficiency</h2>
+
+**Machine:** 
+- Resource config - 5 core, 8GB 
+- Azure hosted PostgreSQL Server 
+- Azure hosted Python service (jupyter notebook)
+
+**Table info:** 
+- 12 columns (3 texts, 2 date, 7 double)
+- Primary key: 3 columns (2 text and 1 date)
+- Indexes: 2 b-tree. (1 on single column and another on three columns)
+
+**Runtime:**
+- Data Size: 20M
+  - without PK and Indexes: ~55s
+  - with PK and indexes: ~150s (~85s to insert data with PK enabled and ~65 seconds to create indexes)   
+
+**With the same above data setup, running it on locally hosted PostgreSQL DB:**
+
+![Screenshot](localruntime.png)
+Note: Numbers are in seconds!
+
 <h2>Usage</h2>
 
 The utility provides the following useful functions and classes:
@@ -189,3 +211,5 @@ async def run():
 if __name__ == '__main__':
     asyncio.run(run())
 ```
+
+

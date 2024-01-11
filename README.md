@@ -35,6 +35,7 @@ This utility leverages the power of PostgreSQL in combination with Python to eff
 **With the same above data setup, running it on locally hosted PostgreSQL DB:**
 
 ![Screenshot](localruntime.png)
+Note: Numbers are in seconds!
 
 <h2>Usage</h2>
 

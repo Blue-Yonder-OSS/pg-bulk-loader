@@ -16,7 +16,7 @@ classifiers = [
 
 dependencies = [
     "pandas",
-    "psycopg[binary]",
+    "psycopg",
     "asyncio",
     "psycopg_pool",
     "retry"

@@ -32,9 +32,9 @@ This utility leverages the power of PostgreSQL in combination with Python to eff
   - without PK and Indexes: ~55s
   - with PK and indexes: ~150s (~85s to insert data with PK enabled and ~65 seconds to create indexes)   
 
-**With the same above data setup, running it on locally hosted PostgreSQL DB:**
+**Running with 1M records without having PK and Indexes with different approaches:**
 
-![Screenshot](localruntime.png)
+![Screenshot](pg-bulk-loader.png)
 Note: Numbers are in seconds!
 
 <h2>Usage</h2>

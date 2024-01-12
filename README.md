@@ -50,8 +50,7 @@ The utility provides the following useful functions and classes:
 
 - `pg_conn_details`: Instance of the PgConnectionDetail class containing PostgreSQL server connection details.
 - `table_name`: Name of the table for bulk insertion.
-- `data_df`: Data in the form of a pandas DataFrame.
-- `data_generator`: Python generator containing DataFrames.
+- `input_data`: Data in the form of a pandas DataFrame or Python generator containing DataFrames.
 - `batch_size`: Number of records to insert and commit at a time.
 - `min_conn_pool_size`, `max_conn_pool_size`: Determine the number of PostgreSQL connections in the connection pool.
 - `drop_and_create_index`: Set to True if indexes need to be dropped during insert and re-created once insertion is complete.
@@ -117,7 +116,7 @@ async def run():
     await batch_insert_to_postgres(
         pg_conn_details=pg_conn_details,
         table_name="<table_name>",
-        data_df=input_data_df,
+        input_data=input_data_df,
         batch_size=250000,
         min_conn_pool_size=20,
         max_conn_pool_size=25,
@@ -157,7 +156,7 @@ async def run():
         pg_conn_details=pg_conn_details,
         table_name="<table_name>",
         data_df=None,
-        data_generator=input_data_df_generator,
+        input_data=input_data_df_generator,
         batch_size=250000,
         min_conn_pool_size=20,
         max_conn_pool_size=25,
@@ -211,5 +210,11 @@ async def run():
 if __name__ == '__main__':
     asyncio.run(run())
 ```
+
+<h2> Development: </h2>
+
+- Run this command to install the dependencies `pip install -r requirements.txt`
+- Run this command to install test dependencies `pip install -r test-requirements.txt`
+- Run below commands to run the unit test cases: `pytest` or `coverage run --source=src.pg_bulk_loader --module pytest --verbose  && coverage report --show-missing`
 
 

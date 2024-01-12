@@ -19,8 +19,7 @@ class TestBatchInsertWrapper(unittest.IsolatedAsyncioTestCase):
             await batch_insert_to_postgres(
                 pg_conn_details=self.pg_connection,
                 table_name="aop_dummy",
-                data_df=None,
-                data_generator=None,
+                input_data=None,
                 batch_size=200,
                 min_conn_pool_size=5,
                 max_conn_pool_size=7,
@@ -55,7 +54,7 @@ class TestBatchInsertWrapper(unittest.IsolatedAsyncioTestCase):
             await batch_insert_to_postgres(
                 pg_conn_details=self.pg_connection,
                 table_name="aop_dummy",
-                data_df=input_df,
+                input_data=input_df,
                 batch_size=200,
                 min_conn_pool_size=5,
                 max_conn_pool_size=7,
@@ -74,7 +73,7 @@ class TestBatchInsertWrapper(unittest.IsolatedAsyncioTestCase):
         await batch_insert_to_postgres(
             pg_conn_details=self.pg_connection,
             table_name="aop_dummy",
-            data_df=input_df,
+            input_data=input_df,
             batch_size=200,
             min_conn_pool_size=5,
             max_conn_pool_size=7,
@@ -94,7 +93,7 @@ class TestBatchInsertWrapper(unittest.IsolatedAsyncioTestCase):
         await batch_insert_to_postgres(
             pg_conn_details=self.pg_connection,
             table_name="aop_dummy",
-            data_df=input_df,
+            input_data=input_df,
             batch_size=200,
             min_conn_pool_size=5,
             max_conn_pool_size=7,
@@ -115,7 +114,7 @@ class TestBatchInsertWrapper(unittest.IsolatedAsyncioTestCase):
         await batch_insert_to_postgres(
             pg_conn_details=self.pg_connection,
             table_name="aop_dummy",
-            data_df=input_df,
+            input_data=input_df,
             batch_size=200,
             min_conn_pool_size=5,
             max_conn_pool_size=7,
@@ -136,7 +135,7 @@ class TestBatchInsertWrapper(unittest.IsolatedAsyncioTestCase):
         await batch_insert_to_postgres(
             pg_conn_details=self.pg_connection,
             table_name="aop_dummy",
-            data_df=input_df,
+            input_data=input_df,
             batch_size=200,
             min_conn_pool_size=5,
             max_conn_pool_size=7,
@@ -157,7 +156,7 @@ class TestBatchInsertWrapper(unittest.IsolatedAsyncioTestCase):
         await batch_insert_to_postgres(
             pg_conn_details=self.pg_connection,
             table_name="aop_dummy",
-            data_df=input_df,
+            input_data=input_df,
             batch_size=200,
             min_conn_pool_size=5,
             max_conn_pool_size=7,
@@ -185,7 +184,7 @@ class TestBatchInsertWrapper(unittest.IsolatedAsyncioTestCase):
         await batch_insert_to_postgres(
             pg_conn_details=self.pg_connection,
             table_name="aop_dummy",
-            data_df=input_df,
+            input_data=input_df,
             batch_size=200,
             min_conn_pool_size=2,
             max_conn_pool_size=3,
@@ -205,7 +204,7 @@ class TestBatchInsertWrapper(unittest.IsolatedAsyncioTestCase):
         await batch_insert_to_postgres(
             pg_conn_details=self.pg_connection,
             table_name="aop_dummy",
-            data_generator=input_df_generator,
+            input_data=input_df_generator,
             batch_size=200,
             min_conn_pool_size=2,
             max_conn_pool_size=3,

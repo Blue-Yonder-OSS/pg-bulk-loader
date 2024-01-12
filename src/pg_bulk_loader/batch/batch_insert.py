@@ -2,7 +2,7 @@ import io
 import pandas as pd
 import asyncio
 from .pg_connection_detail import PgConnectionDetail
-from ..utils.dataframe_utils import get_ranges
+from ..utils.common_utils import get_ranges
 from ..utils.time_it_decorator import time_it
 from retry import retry
 
@@ -40,12 +40,10 @@ class BatchInsert:
     async def close_connection_pool(self):
         await self.pool.close()
 
-    @time_it
     async def execute(self, data_df: pd.DataFrame, col_names: list = None):
         """
         :param data_df: Data to be inserted
         :param col_names: column(s) to be considered for insert from the data_df
-        :return: Boolean - indicating whether the insertion was successful or not
         """
         try:
             partition_ranges = get_ranges(data_df.shape[0], self.batch_size)

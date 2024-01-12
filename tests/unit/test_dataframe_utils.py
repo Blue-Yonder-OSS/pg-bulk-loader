@@ -1,7 +1,7 @@
 import unittest
 import pytest
 import pandas as pd
-from src.pg_bulk_loader.utils.dataframe_utils import partition_df, get_ranges
+from src.pg_bulk_loader.utils.common_utils import partition_df, get_ranges
 
 
 class TestDataFrameUtils(unittest.TestCase):

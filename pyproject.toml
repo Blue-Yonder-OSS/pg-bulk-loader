@@ -1,6 +1,6 @@
 [project]
 name = "pg_bulk_loader"
-version = "1.0.1"
+version = "1.0.0"
 authors = [
   { name="Aditya Jaroli", email="adityajaroli@gmail.com" },
 ]

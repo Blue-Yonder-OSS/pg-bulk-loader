@@ -6,6 +6,7 @@ from ..utils.time_it_decorator import time_it
 import asyncio
 from concurrent.futures import ProcessPoolExecutor
 import math
+import types
 
 
 def __optimize_connection_pool_size(min_conn, total_data_size, batch_size):
@@ -62,20 +63,18 @@ async def run_with_generator(data_generator, batch_size, pg_conn_details, table_
 @time_it
 async def batch_insert_to_postgres(
         pg_conn_details: PgConnectionDetail,
+        input_data,
         table_name: str,
         batch_size: int,
         min_conn_pool_size: int = 5,
         max_conn_pool_size: int = 10,
         use_multi_process_for_create_index: bool = True,
-        drop_and_create_index: bool = True,
-        data_df: pd.DataFrame = None,
-        data_generator = None
+        drop_and_create_index: bool = True
 ):
     """
     :param pg_conn_details: Instance of PgConnectionDetail class which contains postgres connection details
     :param table_name: Name of the table
-    :param data_df: Data to be inserted
-    :param data_generator: Generator which generates pandas DataFrame
+    :param input_data: Data can be a pd.DataFrame | DataFrame Generator
     :param batch_size: Number of records to insert at a time
     :param min_conn_pool_size: Min PG connections created and saved in connection pool
     :param max_conn_pool_size: Max PG connections created and saved in connection pool
@@ -84,7 +83,7 @@ async def batch_insert_to_postgres(
     Note: Only non-pk indexes are dropped and re-created.
     :return:
     """
-    if data_df is None and data_generator is None:
+    if input_data is None:
         raise Exception("Data input cannot be empty!")
 
     fast_load_hack = FastLoadHack(pg_conn_details=pg_conn_details, table_name=table_name)
@@ -95,11 +94,11 @@ async def batch_insert_to_postgres(
         fast_load_hack.drop_indexes(list(indexes.keys()))
 
     try:
-        if isinstance(data_df, pd.DataFrame) and not data_df.empty:
-            await run(data_df, batch_size, pg_conn_details, table_name, min_conn_pool_size, max_conn_pool_size)
-        else:
+        if isinstance(input_data, pd.DataFrame) and not input_data.empty:
+            await run(input_data, batch_size, pg_conn_details, table_name, min_conn_pool_size, max_conn_pool_size)
+        elif isinstance(input_data, types.GeneratorType):
             await run_with_generator(
-                data_generator, batch_size, pg_conn_details, table_name, min_conn_pool_size, max_conn_pool_size
+                input_data, batch_size, pg_conn_details, table_name, min_conn_pool_size, max_conn_pool_size
             )
     except Exception as e:
         raise e

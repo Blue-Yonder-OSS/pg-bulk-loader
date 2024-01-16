@@ -3,7 +3,7 @@
 <h2>Overview</h2>
 
 **pg-bulk-loader** is a utility package designed to facilitate faster bulk insertion DataFrame to a PostgreSQL Database.
-Currently, it supports load from pandas DataFrame only. 
+Currently, it supports load from pandas DataFrame only.
 
 <h2>Purpose</h2>
 
@@ -17,12 +17,12 @@ This utility leverages the power of PostgreSQL in combination with Python to eff
 
 <h2>package's Efficiency</h2>
 
-**Machine:** 
-- Resource config - 5 core, 8GB 
-- Azure hosted PostgreSQL Server 
+**Machine:**
+- Resource config - 5 core, 8GB
+- Azure hosted PostgreSQL Server
 - Azure hosted Python service (jupyter notebook)
 
-**Table info:** 
+**Table info:**
 - 12 columns (3 texts, 2 date, 7 double)
 - Primary key: 3 columns (2 text and 1 date)
 - Indexes: 2 b-tree. (1 on single column and another on three columns)
@@ -30,7 +30,7 @@ This utility leverages the power of PostgreSQL in combination with Python to eff
 **Runtime:**
 - Data Size: 20M
   - without PK and Indexes: ~55s
-  - with PK and indexes: ~150s (~85s to insert data with PK enabled and ~65 seconds to create indexes)   
+  - with PK and indexes: ~150s (~85s to insert data with PK enabled and ~65 seconds to create indexes)
 
 **Running with 1M records without having PK and Indexes with different approaches:**
 
@@ -58,7 +58,7 @@ The utility provides the following useful functions and classes:
 
 **Note:** Provide input either in the form of DataFrame or DataFrame generator
 
-<h3>batch_insert_to_postgres_with_multi_process() function</h3> 
+<h3>batch_insert_to_postgres_with_multi_process() function</h3>
 
 - `pg_conn_details`: Instance of the PgConnectionDetail class containing PostgreSQL server connection details.
 - `table_name`: Name of the table for bulk insertion.
@@ -101,8 +101,8 @@ from pg_bulk_loader import PgConnectionDetail, batch_insert_to_postgres
 async def run():
     # Read data. Let's suppose below DataFrame has 20M records
     input_data_df = pd.DataFrame()
-    
-    # Create Postgres Connection Details object. This will help in creating and managing the database connections 
+
+    # Create Postgres Connection Details object. This will help in creating and managing the database connections
     pg_conn_details = PgConnectionDetail(
         user="<postgres username>",
         password="<postgres password>",
@@ -111,7 +111,7 @@ async def run():
         port="<port>",
         schema="<schema name where table exist>"
     )
-    
+
     # Data will be inserted and committed in the batch of 2,50,000
     await batch_insert_to_postgres(
         pg_conn_details=pg_conn_details,
@@ -140,8 +140,8 @@ from pg_bulk_loader import PgConnectionDetail, batch_insert_to_postgres
 async def run():
     # Read data. Let's suppose below DataFrame has 20M records
     input_data_df_generator = pd.read_csv("file.csv", chunksize=1000000)
-    
-    # Create Postgres Connection Details object. This will help in creating and managing the database connections 
+
+    # Create Postgres Connection Details object. This will help in creating and managing the database connections
     pg_conn_details = PgConnectionDetail(
         user="<postgres username>",
         password="<postgres password>",
@@ -150,7 +150,7 @@ async def run():
         port="<port>",
         schema="<schema name where table exist>"
     )
-    
+
     # Data will be inserted and committed in the batch of 2,50,000
     await batch_insert_to_postgres(
         pg_conn_details=pg_conn_details,
@@ -181,7 +181,7 @@ from pg_bulk_loader import PgConnectionDetail, batch_insert_to_postgres_with_mul
 
 
 async def run():
-    # Create Postgres Connection Details object. This will help in creating and managing the database connections 
+    # Create Postgres Connection Details object. This will help in creating and managing the database connections
     pg_conn_details = PgConnectionDetail(
         user="<postgres username>",
         password="<postgres password>",
@@ -190,9 +190,9 @@ async def run():
         port="<port>",
         schema="<schema name where table exist>"
     )
-    
+
     df_generator = pd.read_csv("20M-file.csv", chunksize=1000000)
-    
+
     # Data will be inserted and committed in the batch of 2,50,000
     await batch_insert_to_postgres_with_multi_process(
         pg_conn_details=pg_conn_details,
@@ -214,6 +214,5 @@ if __name__ == '__main__':
 <h2> Development: </h2>
 
 - Run this command to install the required development dependencies `pip install -r dev-requirements.txt`
+- Run `pre-commit install` so that it creates a hook with `git commit` and run for basic sanity before you make any commit.
 - Run below commands to run the unit test cases: `pytest` or `coverage run --source=src.pg_bulk_loader --module pytest --verbose  && coverage report --show-missing`
-
-

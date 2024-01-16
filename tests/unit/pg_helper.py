@@ -68,7 +68,7 @@ def fetch_rows_count_and_assert(pg_conn_details: PgConnectionDetail, table_name:
         result = curser.execute(f"select count(1) from {table_name}").fetchone()
         curser.close()
         pg_conn.commit()
-        return result[0]
+        assert result[0] == expected
     finally:
         pg_conn.close()
 

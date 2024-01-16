@@ -1,7 +1,10 @@
 import asyncio
 import functools
+import logging
 import time
 from contextlib import contextmanager
+
+logger = logging.getLogger()
 
 
 def time_it(func):
@@ -10,7 +13,7 @@ def time_it(func):
     def wrapping_logic():
         start_time = time.time()
         yield
-        print(f'Function {func.__name__} executed in {(time.time() - start_time):.4f}s')
+        logger.debug(f'Function {func.__name__} executed in {(time.time() - start_time):.4f}s')
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):

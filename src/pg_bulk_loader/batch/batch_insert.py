@@ -3,8 +3,10 @@ import pandas as pd
 import asyncio
 from .pg_connection_detail import PgConnectionDetail
 from ..utils.common_utils import get_ranges
-from ..utils.time_it_decorator import time_it
+import logging
 from retry import retry
+
+logger = logging.getLogger(__name__)
 
 
 class BatchInsert:
@@ -47,10 +49,10 @@ class BatchInsert:
         """
         try:
             partition_ranges = get_ranges(data_df.shape[0], self.batch_size)
-            print(f"Created {len(partition_ranges)} partitions!")
+            logger.debug(f"Created {len(partition_ranges)} partitions!")
 
             if not partition_ranges:
-                print("warning: No data found to be inserted!")
+                logger.warning("No data found to be inserted!")
                 return
 
             if col_names:

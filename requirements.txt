@@ -1,5 +1,6 @@
 pandas
 psycopg
+psycopg_binary
 asyncio
 psycopg_pool
 retry

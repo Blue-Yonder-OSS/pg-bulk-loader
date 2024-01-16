@@ -213,8 +213,7 @@ if __name__ == '__main__':
 
 <h2> Development: </h2>
 
-- Run this command to install the dependencies `pip install -r requirements.txt`
-- Run this command to install test dependencies `pip install -r test-requirements.txt`
+- Run this command to install the required development dependencies `pip install -r dev-requirements.txt`
 - Run below commands to run the unit test cases: `pytest` or `coverage run --source=src.pg_bulk_loader --module pytest --verbose  && coverage report --show-missing`
 
 

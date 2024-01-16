@@ -1,6 +1,6 @@
 [project]
 name = "pg_bulk_loader"
-version = "1.1.1"
+version = "1.1.2"
 authors = [
   { name="Aditya Jaroli", email="adityajaroli@gmail.com" },
 ]
@@ -17,11 +17,12 @@ classifiers = [
 dependencies = [
     "pandas",
     "psycopg",
+    "psycopg_binary",
     "asyncio",
     "psycopg_pool",
     "retry"
 ]
 
 [project.urls]
-Homepage = "https://github.com/adityajaroli/pg-bulk-loader.git"
-Issues = "https://github.com/adityajaroli/pg-bulk-loader/issues"
+Homepage = "https://github.com/Blue-Yonder-OSS/pg-bulk-loader.git"
+Issues = "https://github.com/Blue-Yonder-OSS/pg-bulk-loader/issues"

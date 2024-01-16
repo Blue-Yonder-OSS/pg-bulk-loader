@@ -2,11 +2,13 @@ from .pg_connection_detail import PgConnectionDetail
 from .fast_load_hack import FastLoadHack
 from .batch_insert import BatchInsert
 import pandas as pd
+import logging
 from ..utils.time_it_decorator import time_it
 import asyncio
 from concurrent.futures import ProcessPoolExecutor
 import math
-import types
+
+logger = logging.getLogger(__name__)
 
 
 def __optimize_connection_pool_size(min_conn, total_data_size, batch_size):
@@ -90,13 +92,13 @@ async def batch_insert_to_postgres(
     indexes = {}
     if drop_and_create_index:
         indexes: dict = fast_load_hack.get_indexes()
-        print(f'Indexes to be dropped and re-created: {indexes.keys()}')
+        logger.debug(f'Indexes to be dropped and re-created: {indexes.keys()}')
         fast_load_hack.drop_indexes(list(indexes.keys()))
 
     try:
-        if isinstance(input_data, pd.DataFrame) and not input_data.empty:
+        if isinstance(input_data, pd.DataFrame):
             await run(input_data, batch_size, pg_conn_details, table_name, min_conn_pool_size, max_conn_pool_size)
-        elif isinstance(input_data, types.GeneratorType):
+        else:
             await run_with_generator(
                 input_data, batch_size, pg_conn_details, table_name, min_conn_pool_size, max_conn_pool_size
             )
@@ -140,7 +142,7 @@ async def batch_insert_to_postgres_with_multi_process(
     indexes = {}
     if drop_and_create_index:
         indexes = fast_load_hack.get_indexes()
-        print(f'Indexes to be dropped and re-created: {indexes.keys()}')
+        logger.debug(f'Indexes to be dropped and re-created: {indexes.keys()}')
         fast_load_hack.drop_indexes(list(indexes.keys()))
 
     try:

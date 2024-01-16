@@ -70,7 +70,7 @@ class FastLoadHack:
         try:
             with pg_session.cursor() as cursor:
                 query = f"""
-                    select indexname, indexdef from pg_indexes where 
+                    select indexname, indexdef from pg_indexes where
                     tablename='{self.table_name}' and indexdef like 'CREATE INDEX %'
                 """
                 results = cursor.execute(query)

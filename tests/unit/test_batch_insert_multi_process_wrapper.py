@@ -131,7 +131,7 @@ class TestBatchInsertMultiProcessWrapper(unittest.IsolatedAsyncioTestCase):
             no_of_processes=2,
             drop_and_create_index=True
         )
-        
+
         # Validate from DB
         fetch_rows_count_and_assert(self.pg_connection, "aop_dummy", expected=1000)
 

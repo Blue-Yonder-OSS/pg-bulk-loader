@@ -1,0 +1,23 @@
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.2.0
+    hooks:
+    -   id: trailing-whitespace
+    -   id: end-of-file-fixer
+    -   id: check-yaml
+    -   id: check-added-large-files
+
+-   repo: https://github.com/PyCQA/autoflake
+    rev: v2.2.1
+    hooks:
+    -   id: autoflake
+        args: [--remove-all-unused-imports, --in-place]
+
+- repo: local
+  hooks:
+      - id: code-coverage-checker
+        name: pytest-coverage-checker
+        entry: pytest --cov=src.pg_bulk_loader --cov-fail-under=95
+        language: system
+        types: [python]
+        pass_filenames: false

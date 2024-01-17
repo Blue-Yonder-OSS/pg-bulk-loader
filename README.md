@@ -27,12 +27,16 @@ This utility leverages the power of PostgreSQL in combination with Python to eff
 - Primary key: 3 columns (2 text and 1 date)
 - Indexes: 2 b-tree. (1 on single column and another on three columns)
 
-**Runtime:**
-- Data Size: 20M
-  - without PK and Indexes: ~55s
-  - with PK and indexes: ~150s (~85s to insert data with PK enabled and ~65 seconds to create indexes)
+**Runtime on 20M Dataset:**
+- The table has no PK and no index:
+  - When table is UNLOGGED - ~55 seconds.
+  - When table is LOGGED - ~68 seconds.
 
-**Running with 1M records without having PK and Indexes with different approaches:**
+- The table has PK with 3 columns and 2 b-tree indexes (maintenance work memory at 512 MB):
+  - When table is UNLOGGED - ~150 seconds (~66s are taken for drop-and-create index operation).
+  - When table is LOGGED - ~180 seconds (~68s are taken for drop-and-create index operation).
+
+**Runtime on 1M Dataset without having PK and Indexes with different approaches:**
 
 ![Screenshot](pg-bulk-loader.png)
 Note: Numbers are in seconds!

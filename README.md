@@ -10,10 +10,10 @@ Currently, it supports load from pandas DataFrame only.
 This utility leverages the power of PostgreSQL in combination with Python to efficiently handle the bulk insertion of large datasets. The key features that contribute to its speed include:
 
 1. Utilization of Postgres' copy command
-2. Integration of Psycopg3's pipeline feature
-3. Implementation of Python's coroutines
-4. Harnessing the power of multiprocessing
-5. Capability to drop indexes during insertion and recreate them in parallel
+2. Implementation of Python's coroutines
+3. Harnessing the power of multiprocessing
+4. Capability to drop indexes during insertion and recreate them in parallel
+5. Connection pooling
 
 <h2>package's Efficiency</h2>
 

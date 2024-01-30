@@ -15,7 +15,7 @@ This utility leverages the power of PostgreSQL in combination with Python to eff
 4. Capability to drop indexes during insertion and recreate them in parallel
 5. Connection pooling
 
-<h2>package's Efficiency</h2>
+<h2>Performance in Numbers</h2>
 
 **Machine:**
 - Resource config - 5 core, 8GB

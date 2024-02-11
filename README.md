@@ -1,11 +1,10 @@
 # pg-bulk-loader
 
-<h2>Overview</h2>
+## Description
+[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
 **pg-bulk-loader** is a utility package designed to facilitate faster bulk insertion DataFrame to a PostgreSQL Database.
 Currently, it supports load from pandas DataFrame only.
-
-<h2>Purpose</h2>
 
 This utility leverages the power of PostgreSQL in combination with Python to efficiently handle the bulk insertion of large datasets. The key features that contribute to its speed include:
 
@@ -15,7 +14,11 @@ This utility leverages the power of PostgreSQL in combination with Python to eff
 4. Capability to drop indexes during insertion and recreate them in parallel
 5. Connection pooling
 
-<h2>Performance in Numbers</h2>
+📢 **Blog article:** [Quick load from Pandas to Postgres](https://medium.com/@adityajaroli/quick-load-from-pandas-to-postgres-80c0187c1bdf)
+
+![Screenshot](https://github.com/Blue-Yonder-OSS/pg-bulk-loader/tree/master/public/pandastopostgres.png)
+
+## Performance in Numbers
 
 **Machine:**
 - Resource config - 5 core, 8GB
@@ -38,10 +41,9 @@ This utility leverages the power of PostgreSQL in combination with Python to eff
 
 **Runtime on 1M Dataset without having PK and Indexes with different approaches:**
 
-![Screenshot](pg-bulk-loader.png)
-Note: Numbers are in seconds!
+![Screenshot](https://github.com/Blue-Yonder-OSS/pg-bulk-loader/tree/master/public/pg-bulk-loader.png)
 
-<h2>Usage</h2>
+## Usage
 
 The utility provides the following useful functions and classes:
 
@@ -89,10 +91,16 @@ Properties to create an instance of BatchInsert class:
 - The ideal `batch_size`, as observed during testing, typically falls within the range of 100,000 to 250,000. However, this recommendation is contingent upon the characteristics of the data and table structure.
 The multiprocessing function execution must start in the __main__ block.
 
-<h2>Package installation:</h2>
-    `pip install pg-bulk-loader`
+## Prerequisites
 
-<h2>Examples:</h2>
+Before cloning/forking this project, make sure you have the following tools installed:
+
+- Git
+- Python3.9++
+- pg-bulk-loader package (`pip install pg-bulk-loader`)
+
+
+## Examples
 
 1. Loading entire dataset once and sending for bulk insert in batches:
 
@@ -215,8 +223,20 @@ if __name__ == '__main__':
     asyncio.run(run())
 ```
 
-<h2> Development: </h2>
+## Installation
 
-- Run this command to install the required development dependencies `pip install -r dev-requirements.txt`
-- Run `pre-commit install` so that it creates a hook with `git commit` and run for basic sanity before you make any commit.
-- Run below commands to run the unit test cases: `pytest` or `coverage run --source=src.pg_bulk_loader --module pytest --verbose  && coverage report --show-missing`
+1. Fork the project
+2. Clone the project
+3. Follow the instructions in the console:
+4. Navigate to the project directory cd pg-bulk-loader
+5. Install the dependencies `pip install -r dev-requirements.txt`
+6. Run `pre-commit install` to creates a hook with `git commit` command. This will ensure basic code formatting before you make any commit.
+7. Run test cases to verify installation. Run command `pytest`.
+
+## Contributors
+
+[//]: contributor-faces
+
+<a href="https://github.com/adityajaroli"><img class="avatar rounded-2 avatar-user" src="https://avatars.githubusercontent.com/u/15523808?s=400&u=b1fabb9bbce05976f4c18ea83f9ab1b60890cec0&v=4" title="Aditya Jaroli" width="80" height="80"></a>
+
+[//]: contributor-faces

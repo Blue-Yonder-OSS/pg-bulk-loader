@@ -16,7 +16,7 @@ This utility leverages the power of PostgreSQL in combination with Python to eff
 
 📢 **Blog article:** [Quick load from Pandas to Postgres](https://medium.com/@adityajaroli/quick-load-from-pandas-to-postgres-80c0187c1bdf)
 
-![Screenshot](https://github.com/Blue-Yonder-OSS/pg-bulk-loader/tree/master/public/pandastopostgres.png)
+![Screenshot](./public/pandastopostgres.png)
 
 ## Performance in Numbers
 
@@ -41,7 +41,7 @@ This utility leverages the power of PostgreSQL in combination with Python to eff
 
 **Runtime on 1M Dataset without having PK and Indexes with different approaches:**
 
-![Screenshot](https://github.com/Blue-Yonder-OSS/pg-bulk-loader/tree/master/public/pg-bulk-loader.png)
+![Screenshot](./public/pg-bulk-loader.png)
 
 ## Usage
 
